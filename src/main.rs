@@ -61,7 +61,7 @@ fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
     Ok(Some(BlogPost::new(title, list_items, final_thoughts)))
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
     if args.list_post {
@@ -82,6 +82,8 @@ fn main() {
             .default("post.md".to_string())
             .interact_text()
             .unwrap();
-        blog_post.save(filename);
+        blog_post.save(filename)?;
     }
+
+    Ok(())
 }
