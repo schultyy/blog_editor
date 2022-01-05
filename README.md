@@ -26,6 +26,14 @@ This tool supports you with the task of structuring your blog posts so that they
 
 Based on https://ahrefs.com/blog/blog-post-templates/
 
+### Misc
+
+`blog_editor` allows you to add notes for sub headlines. For that, it opens the default editor. You can override it by setting the `EDITOR` environment variable.
+
+**VSCode:** `EDITOR="vscode -w"`
+**Vim**: `EDITOR=vim`
+**Nano**: `EDITOR=nano`
+
 ## License
 
 MIT

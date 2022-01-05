@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::Write;
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Intro {
     content: String,
 }
@@ -26,17 +26,32 @@ Intro Tips:
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default, Clone)]
+pub struct ListItem {
+    title: String,
+    content: Option<String>
+}
+
+impl ListItem {
+    pub fn new(title: &str, content: Option<String>) -> Self {
+        Self {
+            title: title.to_string(),
+            content
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct BlogPost {
     title: String,
     intro: Intro,
-    list_items: Vec<String>,
+    list_items: Vec<ListItem>,
     final_thoughts: String,
     should_number_list_items: bool
 }
 
 impl BlogPost {
-    pub fn new(title: String, list_items: Vec<String>, final_thoughts: String, should_number_list_items: bool) -> Self {
+    pub fn new(title: String, list_items: Vec<ListItem>, final_thoughts: String, should_number_list_items: bool) -> Self {
         Self {
             title,
             list_items,
@@ -52,7 +67,10 @@ impl BlogPost {
         writeln!(file, "{}", self.intro.content)?;
         writeln!(file, "**TOC PLACEHOLDER**\n")?;
         for (index, list_item) in self.list_items.clone().into_iter().enumerate() {
-            writeln!(file, "{}", self.create_headline(index, list_item))?;
+            writeln!(file, "{}", self.create_headline(index, list_item.title))?;
+            if let Some(content) = list_item.content {
+                writeln!(file, "{}", content)?;
+            }
         }
         writeln!(file, "\n")?;
         writeln!(file, "## Final Thoughts")?;

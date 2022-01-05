@@ -2,7 +2,9 @@ use std::error::Error;
 
 use blog_post::BlogPost;
 use clap::Parser;
-use dialoguer::{console::Style, theme::ColorfulTheme, Confirm, Input};
+use dialoguer::{console::Style, theme::ColorfulTheme, Confirm, Editor, Input};
+
+use crate::blog_post::ListItem;
 
 mod blog_post;
 
@@ -33,10 +35,22 @@ fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
     let mut list_items = vec![];
 
     loop {
-        let list_item = Input::with_theme(&theme)
+        let list_item_title: String = Input::with_theme(&theme)
             .with_prompt("What's the title of this list item? Make them benefit-focused")
             .interact()?;
-        list_items.push(list_item);
+
+        let mut list_item_content = None;
+        if Confirm::with_theme(&ColorfulTheme::default())
+            .with_prompt("Add a few bullet points?")
+            .interact()
+            .unwrap()
+        {
+            if let Some(content) = Editor::new().edit("Add a few bullet points").unwrap() {
+                list_item_content = Some(content);
+            }
+        }
+        list_items.push(ListItem::new(&list_item_title, list_item_content));
+
         if !Confirm::with_theme(&theme)
             .with_prompt("Do you want to keep adding items?")
             .interact()?
@@ -66,7 +80,12 @@ fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
         .interact()
         .unwrap();
 
-    Ok(Some(BlogPost::new(title, list_items, final_thoughts, should_number_list_items)))
+    Ok(Some(BlogPost::new(
+        title,
+        list_items,
+        final_thoughts,
+        should_number_list_items,
+    )))
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
