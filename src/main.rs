@@ -61,7 +61,12 @@ fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
         .default("One or two final short tips".parse().unwrap())
         .interact()?;
 
-    Ok(Some(BlogPost::new(title, list_items, final_thoughts)))
+    let should_number_list_items = Confirm::with_theme(&ColorfulTheme::default())
+        .with_prompt("Would you like to number your list items?")
+        .interact()
+        .unwrap();
+
+    Ok(Some(BlogPost::new(title, list_items, final_thoughts, should_number_list_items)))
 }
 
 fn main() -> Result<(), Box<dyn Error>> {

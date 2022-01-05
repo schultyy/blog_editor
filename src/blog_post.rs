@@ -32,14 +32,16 @@ pub struct BlogPost {
     intro: Intro,
     list_items: Vec<String>,
     final_thoughts: String,
+    should_number_list_items: bool
 }
 
 impl BlogPost {
-    pub fn new(title: String, list_items: Vec<String>, final_thoughts: String) -> Self {
+    pub fn new(title: String, list_items: Vec<String>, final_thoughts: String, should_number_list_items: bool) -> Self {
         Self {
             title,
             list_items,
             final_thoughts,
+            should_number_list_items,
             intro: Intro::default()
         }
     }
@@ -49,13 +51,22 @@ impl BlogPost {
         writeln!(file, "# {}", self.title)?;
         writeln!(file, "{}", self.intro.content)?;
         writeln!(file, "**TOC PLACEHOLDER**\n")?;
-        for list_item in &self.list_items {
-            writeln!(file, "## {}", list_item)?;
+        for (index, list_item) in self.list_items.clone().into_iter().enumerate() {
+            writeln!(file, "{}", self.create_headline(index, list_item))?;
         }
         writeln!(file, "\n")?;
         writeln!(file, "## Final Thoughts")?;
         writeln!(file, "{}", self.final_thoughts)?;
         Ok(())
+    }
+
+    fn create_headline(&self, index: usize, headline: String) -> String {
+        if self.should_number_list_items {
+            format!("## {}. {}", index + 1, headline)
+        }
+        else {
+            format!("## {}", headline)
+        }
     }
 }
 
@@ -65,6 +76,7 @@ impl Default for BlogPost {
             title: "11 Proven Ways to do something awesome".into(),
             intro: Intro::default(),
             list_items: vec![],
+            should_number_list_items: false,
             final_thoughts: String::default(),
         }
     }
