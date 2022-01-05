@@ -21,7 +21,7 @@ fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
     };
     println!("New List Post");
 
-    let title = Input::with_theme(&theme)
+    let mut title = Input::with_theme(&theme)
         .with_prompt("What's the title? (Mention the desired outcome, e.g. 'More traffic|better visibility')")
         .default("Using Rust to your advantage".parse().unwrap())
         .interact()?;
@@ -42,6 +42,17 @@ fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
         }
     }
 
+    if Confirm::with_theme(&theme)
+        .with_prompt(format!(
+            "Include Number in Post title? >> \"{} {}\"",
+            list_items.len(),
+            title
+        ))
+        .interact()?
+    {
+        title = format!("{} {}", list_items.len(), title);
+    }
+
     let final_thoughts = Input::with_theme(&theme)
         .with_prompt("Final Thoughts - Provide a few bullet points on final thoughts.")
         .default("One or two final short tips".parse().unwrap())
@@ -58,12 +69,12 @@ fn main() {
             Ok(None) => {
                 eprintln!("Aborted.");
                 std::process::exit(1)
-            },
+            }
             Ok(Some(post)) => post,
             Err(err) => {
                 eprintln!("error: {}", err);
                 std::process::exit(1)
-            },
+            }
         };
 
         let filename: String = Input::with_theme(&ColorfulTheme::default())
