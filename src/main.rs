@@ -1,7 +1,10 @@
-use std::{error::Error, net::IpAddr};
+use std::error::Error;
 
+use blog_post::BlogPost;
 use clap::Parser;
-use dialoguer::{console::Style, theme::ColorfulTheme, Confirm, Input, Select};
+use dialoguer::{console::Style, theme::ColorfulTheme, Confirm, Input};
+
+mod blog_post;
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
@@ -9,44 +12,6 @@ struct Args {
     /// Write a List Post
     #[clap(short, long)]
     list_post: bool,
-}
-
-#[derive(Debug)]
-struct Intro {
-    content: String,
-}
-
-impl Default for Intro {
-    fn default() -> Self {
-        Self {
-            content: r#"
-            **Feeling overwhelmed by the infinite options for driving traffic to your website? You're not alone**
-
-            -Keep it short
-            - Try to establish trust in as few words as possible
-            - Add a table of content
-            "#.into()
-        }
-    }
-}
-
-#[derive(Debug)]
-struct BlogPost {
-    title: String,
-    intro: Intro,
-    list_items: Vec<String>,
-    final_thoughts: String,
-}
-
-impl Default for BlogPost {
-    fn default() -> Self {
-        Self {
-            title: "11 Proven Ways to do something awesome".into(),
-            intro: Intro::default(),
-            list_items: vec![],
-            final_thoughts: String::default(),
-        }
-    }
 }
 
 fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
@@ -82,22 +47,30 @@ fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
         .default("One or two final short tips".parse().unwrap())
         .interact()?;
 
-    Ok(Some(BlogPost {
-        title,
-        intro: Intro::default(),
-        list_items,
-        final_thoughts: final_thoughts,
-    }))
+    Ok(Some(BlogPost::new(title, list_items, final_thoughts)))
 }
 
 fn main() {
     let args = Args::parse();
 
     if args.list_post {
-        match list_post_wizard() {
-            Ok(None) => println!("Aborted."),
-            Ok(Some(config)) => println!("{:#?}", config),
-            Err(err) => println!("error: {}", err),
-        }
+        let blog_post = match list_post_wizard() {
+            Ok(None) => {
+                eprintln!("Aborted.");
+                std::process::exit(1)
+            },
+            Ok(Some(post)) => post,
+            Err(err) => {
+                eprintln!("error: {}", err);
+                std::process::exit(1)
+            },
+        };
+
+        let filename: String = Input::with_theme(&ColorfulTheme::default())
+            .with_prompt("What's the filename of the new blog post?")
+            .default("post.md".to_string())
+            .interact_text()
+            .unwrap();
+        blog_post.save(filename);
     }
 }
