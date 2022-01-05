@@ -12,6 +12,7 @@ mod blog_post;
 #[clap(about, version, author)]
 struct Args {
     /// Write a List Post
+    /// List posts are best for non-chronological information. In other words, anything that doesn’t need to be in a specific order.
     #[clap(short, long)]
     list_post: bool,
     ///Print a number of list post examples
@@ -93,11 +94,20 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if args.show_list_post_examples {
         let list_post_example_headlines = vec![
+            "XX Ways to [Desired Outcome]",
+            "XX [Topic] Tips",
+            "XX [Type] Tools",
+            "XX Reasons Why [Problem]",
+            "XX [Topic] Techniques",
+            "XX [Products] For [Audience]",
+            "\n",
+            "Specific examples:",
+            "\n",
             "17 Blogging Tips For Beginners (That Actually Work)",
             "13 Proven Tactics to Increase Your Blog Traffic",
             "86 Blog Post Ideas (With Successful Examples)",
             "29 Awesome SEO Blogs to Follow (Graded and Ranked)",
-            "10 Google Ranking Factors You Shouldn’t Ignore",
+            "10 Google Ranking Factors You Shouldn't Ignore",
         ];
 
         for example in list_post_example_headlines {
