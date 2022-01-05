@@ -48,7 +48,7 @@ impl BlogPost {
         let mut file = File::create(filename)?;
         writeln!(file, "# {}", self.title)?;
         writeln!(file, "{}", self.intro.content)?;
-        writeln!(file, "TOC")?;
+        writeln!(file, "**TOC PLACEHOLDER**\n")?;
         for list_item in &self.list_items {
             writeln!(file, "## {}", list_item)?;
         }
