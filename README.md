@@ -30,9 +30,9 @@ Based on https://ahrefs.com/blog/blog-post-templates/
 
 `blog_editor` allows you to add notes for sub headlines. For that, it opens the default editor. You can override it by setting the `EDITOR` environment variable.
 
-**VSCode:** `EDITOR="vscode -w"`
-**Vim**: `EDITOR=vim`
-**Nano**: `EDITOR=nano`
+- **VSCode:** `EDITOR="vscode -w"`
+- **Vim**: `EDITOR=vim`
+- **Nano**: `EDITOR=nano`
 
 ## License
 
