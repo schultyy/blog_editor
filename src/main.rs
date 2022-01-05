@@ -12,6 +12,9 @@ struct Args {
     /// Write a List Post
     #[clap(short, long)]
     list_post: bool,
+    ///Print a number of list post examples
+    #[clap(short, long)]
+    show_list_post_examples: bool,
 }
 
 fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
@@ -64,7 +67,20 @@ fn list_post_wizard() -> Result<Option<BlogPost>, Box<dyn Error>> {
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
-    if args.list_post {
+    if args.show_list_post_examples {
+        let list_post_example_headlines = vec![
+            "17 Blogging Tips For Beginners (That Actually Work)",
+            "13 Proven Tactics to Increase Your Blog Traffic",
+            "86 Blog Post Ideas (With Successful Examples)",
+            "29 Awesome SEO Blogs to Follow (Graded and Ranked)",
+            "10 Google Ranking Factors You Shouldn’t Ignore",
+        ];
+
+        for example in list_post_example_headlines {
+            println!("{}", example);
+        }
+        println!("\nSource: https://ahrefs.com/blog/blog-post-templates/");
+    } else if args.list_post {
         let blog_post = match list_post_wizard() {
             Ok(None) => {
                 eprintln!("Aborted.");
