@@ -69,7 +69,7 @@ impl BlogPost {
         for (index, list_item) in self.list_items.clone().into_iter().enumerate() {
             writeln!(file, "{}", self.create_headline(index, list_item.title))?;
             if let Some(content) = list_item.content {
-                writeln!(file, "{}", content)?;
+                writeln!(file, "{}\n", content)?;
             }
         }
         writeln!(file, "\n")?;
@@ -80,10 +80,10 @@ impl BlogPost {
 
     fn create_headline(&self, index: usize, headline: String) -> String {
         if self.should_number_list_items {
-            format!("## {}. {}", index + 1, headline)
+            format!("## {}. {}\n", index + 1, headline)
         }
         else {
-            format!("## {}", headline)
+            format!("## {}\n", headline)
         }
     }
 }
